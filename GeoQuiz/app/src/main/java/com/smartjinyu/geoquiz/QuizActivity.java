@@ -13,6 +13,7 @@ import android.widget.Toast;
 public class QuizActivity extends AppCompatActivity {
     private static final String TAG = "QuizActivity";
     private static final String KEY_INDEX = "index";
+    private static final String CHEATED_KEY_INDEX = "CHEATED_INDEX";
     private static final int REQUEST_CODE_CHEAT = 0;
 
     private Button mTrueButton;
@@ -22,15 +23,14 @@ public class QuizActivity extends AppCompatActivity {
     private TextView mQuestionTextView;
 
     private Question[] mQuestionBank = new Question[]{
-            new Question(R.string.question_oceans, true),
-            new Question(R.string.question_africa, true),
-            new Question(R.string.question_americans, false),
-            new Question(R.string.question_mideast, false),
-            new Question(R.string.question_asia, true)
+            new Question(R.string.question_oceans, true,false),
+            new Question(R.string.question_africa, true,false),
+            new Question(R.string.question_americans, false,false),
+            new Question(R.string.question_mideast, false,false),
+            new Question(R.string.question_asia, true,false)
     };//create an array of question of objects
 
     private int mCurrentIndex = 0;
-    private boolean mIsCheater;
 
     private void updateQuestion() {
         //  Log.d(TAG,"Updating question text for question #"+mCurrentIndex,new Exception());
@@ -41,7 +41,7 @@ public class QuizActivity extends AppCompatActivity {
     private void checkAnswer(boolean userPressedTrue) {
         boolean answerIsTrue = mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId = 0;
-        if (mIsCheater) {
+        if (mQuestionBank[mCurrentIndex].isCheated()) {
             messageResId = R.string.judement_toast;
         } else {
             if (userPressedTrue == answerIsTrue) {
@@ -57,9 +57,6 @@ public class QuizActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null) {
-            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
-        }
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_quiz);
 
@@ -77,7 +74,6 @@ public class QuizActivity extends AppCompatActivity {
         mFalseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(QuizActivity.this,R.string.incorrect_toast,Toast.LENGTH_SHORT).show();
                 checkAnswer(false);
             }
         });
@@ -86,7 +82,6 @@ public class QuizActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mCurrentIndex = (mCurrentIndex + 1) % mQuestionBank.length;
-                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -108,6 +103,21 @@ public class QuizActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.d(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, mCurrentIndex);
+        for(int i=0; i < 5;i++){
+            savedInstanceState.putBoolean(CHEATED_KEY_INDEX+i,mQuestionBank[i].isCheated());
+        }
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        if (savedInstanceState != null) {
+            mCurrentIndex = savedInstanceState.getInt(KEY_INDEX);
+            for(int i=0; i < 5;i++){
+                mQuestionBank[i].setCheated(savedInstanceState.getBoolean(CHEATED_KEY_INDEX+i,false));
+            }
+
+        }
+
     }
 
     @Override
@@ -119,7 +129,7 @@ public class QuizActivity extends AppCompatActivity {
             if (data == null) {
                 return;
             }
-            mIsCheater = CheatActivity.wasAnswerShown(data);
+            mQuestionBank[mCurrentIndex].setCheated(true);
         }
     }
 

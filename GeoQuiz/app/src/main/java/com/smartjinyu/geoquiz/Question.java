@@ -1,5 +1,7 @@
 package com.smartjinyu.geoquiz;
 
+import android.util.Log;
+
 /**
  * Created by smart on 2016/10/26.
  */
@@ -7,6 +9,16 @@ package com.smartjinyu.geoquiz;
 public class Question {
     private int mTextResId;
     private boolean mAnswerTrue;
+
+    public boolean isCheated() {
+        return mIsCheated;
+    }
+
+    public void setCheated(boolean cheated) {
+        mIsCheated = cheated;
+    }
+
+    private boolean mIsCheated;
 
     public boolean isAnswerTrue() {
         return mAnswerTrue;
@@ -24,9 +36,11 @@ public class Question {
         mTextResId = textResId;
     }
 
-    public Question(int TextResId, boolean AnswerTrue){
+    public Question(int TextResId, boolean AnswerTrue,boolean isCheated){
         mTextResId = TextResId;
         mAnswerTrue = AnswerTrue;
+        mIsCheated = isCheated;
+        Log.d("Test","QuestionCreated");
     }
 
 }
