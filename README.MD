@@ -8,3 +8,9 @@ These projects are Demo projects in Android Programming: The Big Nerd Ranch Guid
 
 Used to exlore the fundamentals of Android projects, activities, layouts, and explicit intents.
 
+This App is completed through Chapter 1 to Chapter 6
+
+
+##### CriminalIntent
+
+This app is complex and will take thirteen chapters to complete.
