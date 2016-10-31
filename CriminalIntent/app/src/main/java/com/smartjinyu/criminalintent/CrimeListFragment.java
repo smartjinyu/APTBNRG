@@ -1,6 +1,5 @@
 package com.smartjinyu.criminalintent;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by smartjinyu on 2016/10/30.
@@ -48,7 +46,7 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         }else{
-            mAdapter.notifyDataSetChanged();
+            mAdapter.notifyItemChanged(CrimeActivity.getPosition());
         }
     }
 
@@ -76,7 +74,7 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View v){
-            Intent intent = CrimeActivity.newIntent(getActivity(),mCrime.getId());
+            Intent intent = CrimeActivity.newIntent(getActivity(),mCrime.getId(),getAdapterPosition());
             startActivity(intent);
         }
     }
