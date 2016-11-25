@@ -23,6 +23,7 @@ import java.util.List;
 
 public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
+    private TextView mTextView;
     private CrimeAdapter mAdapter;
 
     private static final String TAG = "RecyclerView";
@@ -35,10 +36,11 @@ public class CrimeListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_crime_list,container,false);
         mCrimeRecyclerView = (RecyclerView) view.findViewById(R.id.crime_recycler_view);
         mCrimeRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+        mTextView = (TextView) view.findViewById(R.id.empty_list_textview);
         if(savedInstanceState != null){
             mSubtitleVisible = savedInstanceState.getBoolean(SAVED_SUBTITLE_VISIBLE);
         }
+
 
         updateUI();
 
@@ -98,7 +100,7 @@ public class CrimeListFragment extends Fragment {
     private void updateSubtitle(){
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         int crimeCount = crimeLab.getCrimes().size();
-        String subtitle = getString(R.string.subtitle_format,crimeCount);
+        String subtitle = getResources().getQuantityString(R.plurals.subtitle_format,crimeCount,crimeCount);
         if(!mSubtitleVisible){
             subtitle = null;
         }
@@ -113,6 +115,15 @@ public class CrimeListFragment extends Fragment {
     private void updateUI(){
         CrimeLab crimeLab = CrimeLab.get(getActivity());
         List<Crime> crimes = crimeLab.getCrimes();
+
+        if(crimes.size() == 0){
+            mCrimeRecyclerView.setVisibility(View.GONE);
+            mTextView.setVisibility(View.VISIBLE);
+        }else{
+            mCrimeRecyclerView.setVisibility(View.VISIBLE);
+            mTextView.setVisibility(View.GONE);
+        }
+
         if(mAdapter == null){
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);

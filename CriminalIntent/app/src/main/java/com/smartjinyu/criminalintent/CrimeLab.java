@@ -99,4 +99,8 @@ public class CrimeLab {
         mDatabase.update(CrimeDbSchema.CrimeTable.NAME,values, CrimeDbSchema.CrimeTable.Cols.UUID
         +" = ?",new String[]{uuidString});
     }
+    public void removeCrime(Crime c){
+        mCrimes.remove(c);
+    }
+
 }
