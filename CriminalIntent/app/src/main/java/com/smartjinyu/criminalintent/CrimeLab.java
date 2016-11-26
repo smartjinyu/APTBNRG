@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 /*
  * A singleton class is a class with a private constructor and a get() method,which returns the instance if it already exists, otherwise it will
- * call the contructor to create it.
+ * call the constructor to create it.
  */
 public class CrimeLab {
     private static CrimeLab sCrimeLab;
@@ -43,6 +43,7 @@ public class CrimeLab {
         values.put(CrimeDbSchema.CrimeTable.Cols.TITLE,crime.getTitle());
         values.put(CrimeDbSchema.CrimeTable.Cols.DATE,crime.getDate().getTime());
         values.put(CrimeDbSchema.CrimeTable.Cols.SOLVED,crime.isSolved()? 1 : 0);
+        values.put(CrimeDbSchema.CrimeTable.Cols.SUSPECT,crime.getSuspect());
         return values;
     }
 
