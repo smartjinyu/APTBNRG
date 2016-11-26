@@ -42,6 +42,7 @@ public class CrimeFragment extends Fragment{
     private Button mDateButton;
     private Button mReportButton;
     private Button mSuspectButton;
+    private Button mCallButton;
 
     public static CrimeFragment newInstance(UUID crimeId){
         Bundle args = new Bundle();
@@ -118,6 +119,45 @@ public class CrimeFragment extends Fragment{
             }
         });
 
+        mCallButton = (Button) v.findViewById(R.id.crime_call);
+        mCallButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri lookupUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, mCrime.getSuspect());
+                Uri res = ContactsContract.Contacts.lookupContact(getActivity().getContentResolver(), lookupUri);
+
+                String[] queryFields = new String[] {ContactsContract.Contacts._ID};
+                Cursor c1 = getActivity().getContentResolver().query(res,queryFields,null, null,null);
+                String id = null;
+
+                try{
+                    if(c1.getCount() != 0){
+                        c1.moveToFirst();
+                        id = c1.getString(0);
+                    }
+                }finally {
+                    c1.close();
+                }
+
+                Cursor cursor = getActivity().getContentResolver().query(
+                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                        null,
+                        ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                        new String[]{id}, null);
+
+                cursor.moveToFirst();
+                String number = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                Uri num = Uri.parse("tel:n"+number);
+                Intent i =new Intent(Intent.ACTION_DIAL,num);
+                startActivity(i);
+
+
+                cursor.close();
+
+
+            }
+        });
+
         final Intent pickContact = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
         mSuspectButton = (Button) v.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
@@ -126,9 +166,27 @@ public class CrimeFragment extends Fragment{
                 startActivityForResult(pickContact,REQUEST_CONTACT);
             }
         });
+
         if(mCrime.getSuspect() != null ){
-            mSuspectButton.setText(mCrime.getSuspect());
+            //haven't handle runtime permission in SDK23 yet
+            Uri lookupUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, mCrime.getSuspect());
+            Uri res = ContactsContract.Contacts.lookupContact(getActivity().getContentResolver(), lookupUri);
+
+            String[] queryFields = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
+            Cursor c1 = getActivity().getContentResolver().query(res,queryFields,null,null,null);
+            try{
+                if(c1.getCount() != 0){
+                    c1.moveToFirst();
+                    String suspectName = c1.getString(0);
+                    mSuspectButton.setText(suspectName);
+                }
+            }finally {
+                c1.close();
+            }
+        }else{
+            mCallButton.setEnabled(false);
         }
+
         PackageManager packageManager = getActivity().getPackageManager();
         if(packageManager.resolveActivity(pickContact,PackageManager.MATCH_DEFAULT_ONLY)==null){
             mSuspectButton.setEnabled(false);
@@ -148,20 +206,43 @@ public class CrimeFragment extends Fragment{
             updateDate();
         }else if(requestCode == REQUEST_CONTACT && data != null){
             Uri contactUri = data.getData();
-            String[] queryFields = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
-            Cursor c = getActivity().getContentResolver().query(contactUri,queryFields,null,null,null);
+            String[] queryFields1 = new String[] { ContactsContract.Contacts.LOOKUP_KEY };
+
+            Cursor c = getActivity().getContentResolver().query(contactUri,queryFields1,null,null,null);
             //query like a where clause
             try{
                 if(c.getCount() == 0){
                     return;
                 }
                 c.moveToFirst();
-                String suspect = c.getString(0);
-                mCrime.setSuspect(suspect);
-                mSuspectButton.setText(suspect);
+                String key = c.getString(0);
+                mCrime.setSuspect(key);
+
             }finally {
                 c.close();
             }
+            //haven't handle runtime permission in SDK23 yet
+            Uri lookupUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_LOOKUP_URI, mCrime.getSuspect());
+            Uri res = ContactsContract.Contacts.lookupContact(getActivity().getContentResolver(), lookupUri);
+
+            String[] queryFields = new String[] { ContactsContract.Contacts.DISPLAY_NAME };
+            Cursor c1 = getActivity().getContentResolver().query(res,queryFields,null,null,null);
+            try{
+                if(c1.getCount() == 0){
+                    return;
+                }
+                c1.moveToFirst();
+                String suspectName = c1.getString(0);
+                mSuspectButton.setText(suspectName);
+            }finally {
+                c1.close();
+            }
+            if(!mCallButton.isEnabled()){
+                mCallButton.setEnabled(true);
+            }
+
+
+
         }
     }
 
