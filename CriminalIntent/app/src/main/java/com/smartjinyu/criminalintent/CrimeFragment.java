@@ -17,9 +17,11 @@ import android.support.v4.content.FileProvider;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -53,6 +55,8 @@ public class CrimeFragment extends Fragment{
     private ImageView mPhotoView;
     private File mPhotoFile;
 
+    private int mHeight,mWidth;
+
     public static CrimeFragment newInstance(UUID crimeId){
         Bundle args = new Bundle();
         args.putSerializable(ARG_CRIME_ID,crimeId);
@@ -73,6 +77,7 @@ public class CrimeFragment extends Fragment{
     public void onPause(){
         super.onPause();
         CrimeLab.get(getActivity()).updateCrime(mCrime);
+        updatePhotoView();
     }
 
     @Override
@@ -149,7 +154,8 @@ public class CrimeFragment extends Fragment{
 
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
-        updatePhotoView();
+
+
         mPhotoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,8 +183,27 @@ public class CrimeFragment extends Fragment{
                 startActivityForResult(captureImage,REQUEST_PHOTO);
             }
         });
+        mPhotoView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                mHeight = mPhotoView.getHeight();
+                mWidth = mPhotoView.getWidth();
+                updatePhotoView();//when the view is created, the listener will be notified,so call updatePhotoView() here
+                mPhotoView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+
+
 
         return v;
+
+    }
+
+    @Override
+    public void onViewCreated(View view,Bundle savedInstanceState){
+        super.onViewCreated(view,savedInstanceState);
+        updatePhotoView();
+
     }
 
     @Override
@@ -240,7 +265,8 @@ public class CrimeFragment extends Fragment{
         if( mPhotoFile == null || !mPhotoFile.exists()){
             mPhotoView.setImageDrawable(null);
         }else{
-            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(),getActivity());
+
+            Bitmap bitmap = PictureUtils.getScaledBitmap(mPhotoFile.getPath(),mWidth,mHeight);
             mPhotoView.setImageBitmap(bitmap);
         }
     }
