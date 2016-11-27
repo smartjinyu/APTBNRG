@@ -150,6 +150,16 @@ public class CrimeFragment extends Fragment{
         mPhotoButton = (ImageButton) v.findViewById(R.id.crime_camera);
         mPhotoView = (ImageView) v.findViewById(R.id.crime_photo);
         updatePhotoView();
+        mPhotoView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mPhotoFile != null){
+                    FragmentManager fragmentManager = getFragmentManager();
+                    ZoomedFragment fragment = ZoomedFragment.newInstance(mCrime.getId());
+                    fragment.show(fragmentManager,null);
+                }
+            }
+        });
 
         final Intent captureImage = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         boolean canTakePhoto = (mPhotoFile != null) && (captureImage.resolveActivity(packageManager) != null);
