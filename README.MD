@@ -8,9 +8,21 @@ These projects are Demo projects in Android Programming: The Big Nerd Ranch Guid
 
 Used to exlore the fundamentals of Android projects, activities, layouts, and explicit intents.
 
-This App is completed through Chapter 1 to Chapter 6
+This App is completed through Chapter 1 to Chapter 6.
 
 
 ##### CriminalIntent
 
-This app is complex and will take thirteen chapters to complete.
+This app is complex and take thirteen chapters to complete(Chapter 7 to 17).
+
+Here are the knowledge covered in this project.
+
+- UI Fragment, Fragment Arguments (Chapter 7,10,17)
+- Layout and Widgets (Chapter 8)
+- RecyclerView (Chapter 9)
+- ViewPager (Chapter 11)
+- Dialogs (Chapter 12)
+- Toolbar (Chapter 13)
+- Databases(SQLite) (Chapter 14)
+- Implicit Intents (Chapter 15)
+- Image take, save and display (Chapter 16)
