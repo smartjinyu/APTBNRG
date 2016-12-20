@@ -14,7 +14,7 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
     protected abstract Fragment createFragment();
     @LayoutRes
     protected int getLayoutResId(){
-        return R.layout.list_item_sound;
+        return R.layout.activity_fragment;
     }
 
     @Override
@@ -23,11 +23,11 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
         setContentView(getLayoutResId());
 
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_beat_box_recycler_view);
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
         if(fragment == null){
             fragment = createFragment();
             fm.beginTransaction()
-                    .add(R.id.fragment_beat_box_recycler_view,fragment)
+                    .add(R.id.fragment_container,fragment)
                     .commit();
         }
     }
