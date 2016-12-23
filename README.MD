@@ -33,3 +33,9 @@ This app is finished through Chapter 18 to Chapter 21.
 
 - Assets and Audio (Chapter 18,19)
 - XMLs, styles and theme (Chapter 20,20)
+
+#### NerdLauncher
+
+This app is finished in Chapter 22.
+
+- Intents and tasks
