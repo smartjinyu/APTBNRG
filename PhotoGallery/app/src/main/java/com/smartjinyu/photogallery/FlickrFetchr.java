@@ -3,6 +3,8 @@ package com.smartjinyu.photogallery;
 import android.net.Uri;
 import android.util.Log;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -10,6 +12,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -37,8 +40,9 @@ public class FlickrFetchr {
                     .build().toString();
             String jsonString = getUrlString(url);
             Log.i(TAG,"Received JSON: "+ jsonString);
-            JSONObject jsonBody = new JSONObject(jsonString);
-            parseItems(items,jsonBody);
+            //JSONObject jsonBody = new JSONObject(jsonString);
+            //parseItems(items,jsonBody);
+            parseItemsGson(items,jsonString);
         } catch (IOException ioe){
             Log.e(TAG,"Failed to fetch items",ioe);
         } catch (JSONException je){
@@ -46,6 +50,24 @@ public class FlickrFetchr {
         }
         return items;
     }
+
+    private void parseItemsGson(List<GalleryItem> items,String jsonBody)
+            throws JSONException{
+        Gson gson = new Gson();
+        PhotoGson photoGson = gson.fromJson(jsonBody,PhotoGson.class);
+        for(int i = 0;i < photoGson.photos.photo.size(); i++){
+            GalleryItem item = new GalleryItem();
+            item.setId(photoGson.photos.photo.get(i).id);
+            item.setCaption(photoGson.photos.photo.get(i).title);
+            if(photoGson.photos.photo.get(i).url_s != null){
+                item.setUrl(photoGson.photos.photo.get(i).url_s);
+            }
+            items.add(item);
+        }
+    }
+
+
+
 
     private void parseItems(List<GalleryItem> items,JSONObject jsonBody)
             throws  IOException,JSONException{
