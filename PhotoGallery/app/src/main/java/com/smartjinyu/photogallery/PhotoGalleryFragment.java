@@ -1,5 +1,6 @@
 package com.smartjinyu.photogallery;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,7 @@ import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -45,6 +47,7 @@ public class PhotoGalleryFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         updateItems();
+
         Handler responseHandler = new Handler();
         mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);
         mThumbnailDownloader.setThumbnailDownloadListener(
@@ -63,7 +66,7 @@ public class PhotoGalleryFragment extends Fragment {
     @Override
     public void onDestroy(){
         super.onDestroy();
-        mThumbnailDownloader.clearQueue();
+        mThumbnailDownloader.quit();
         Log.i(TAG,"Background thread destroyed");
     }
 
@@ -113,6 +116,13 @@ public class PhotoGalleryFragment extends Fragment {
                 searchView.setQuery(query,false);
             }
         });
+
+        MenuItem toggleItem = menu.findItem(R.id.menu_item_toggle_polling);
+        if(PollService.isServiceAlarmOn(getActivity())){
+            toggleItem.setTitle(R.string.stop_polling);
+        }else{
+            toggleItem.setTitle(R.string.start_polling);
+        }
     }
 
     @Override
@@ -122,6 +132,12 @@ public class PhotoGalleryFragment extends Fragment {
                 QueryPreferences.setStoredQuery(getActivity(),null);
                 updateItems();
                 return true;
+            case R.id.menu_item_toggle_polling:
+                boolean shouldStartAlarm = !PollService.isServiceAlarmOn(getActivity());
+                PollService.setServiceAlarm(getActivity(),shouldStartAlarm);
+                getActivity().invalidateOptionsMenu();
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
