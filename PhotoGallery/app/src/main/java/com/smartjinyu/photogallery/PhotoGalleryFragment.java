@@ -110,7 +110,7 @@ public class PhotoGalleryFragment extends Fragment {
             @Override
             public void onClick(View v){
                 String query = QueryPreferences.getStoredQuery(getActivity());
-                searchView.setQuery(query);
+                searchView.setQuery(query,false);
             }
         });
     }
