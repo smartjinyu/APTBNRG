@@ -47,3 +47,9 @@ A simple Flickr client and is completed through Chapter 232 to Chapter 28.
 - Background Threads and Muti-threads (Chapter 23,24)
 - Background Services (Chapter 26)
 - Broadcast Intents (Chapter 27)
+
+#### DragAndDraw
+
+This app is finished in Chapter 29.
+
+- Custom View and Touch Events.
