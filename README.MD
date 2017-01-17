@@ -39,3 +39,11 @@ This app is finished through Chapter 18 to Chapter 21.
 This app is finished in Chapter 22.
 
 - Intents and tasks
+
+#### PhotoGallery
+
+A simple Flickr client and is completed through Chapter 232 to Chapter 28.
+
+- Background Threads and Muti-threads (Chapter 23,24)
+- Background Services (Chapter 26)
+- Broadcast Intents (Chapter 27)
