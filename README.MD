@@ -59,3 +59,9 @@ This app is finished in Chapter 29.
 This app is finished in Chapter 30.
 
 - Custom Animations
+
+#### Locatr
+
+This app is finished in Chapter 31,32.
+
+- Locations and Play Services
