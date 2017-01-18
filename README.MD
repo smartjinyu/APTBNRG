@@ -6,7 +6,7 @@ These projects are Demo projects in Android Programming: The Big Nerd Ranch Guid
 
 #### GeoQuiz
 
-Used to exlore the fundamentals of Android projects, activities, layouts, and explicit intents.
+Used to exlore the fundamentals of Android projects like activities, layouts, and explicit intents.
 
 This App is completed through Chapter 1 to Chapter 6.
 
@@ -52,4 +52,10 @@ A simple Flickr client and is completed through Chapter 232 to Chapter 28.
 
 This app is finished in Chapter 29.
 
-- Custom View and Touch Events.
+- Custom View and Touch Events
+
+#### Sunset
+
+This app is finished in Chapter 30.
+
+- Custom Animations
